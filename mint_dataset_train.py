@@ -1,11 +1,18 @@
 import struct
-import os
 from array import array as pyarray
-
+import cv2
+from glob import glob
+import os
 from numpy import *
 from pylab import *
 from sklearn import svm
+from sklearn.metrics import accuracy_score
 
+SAMPLE_SIZE = (28, 28)
+SZ = 28
+PATH_DATASET = '/media/afali/Project/Projects/Projects/Python-workspace/hello-scikitlearn/Dataset/'
+PATH_TEST_FILES = '/media/afali/Project/Projects/Projects/Python-workspace/hello-scikitlearn/Test/'
+bin_n = 16  # Number of bins
 
 def read(dataset="training", path="."):
     if dataset is "training":
@@ -82,8 +89,7 @@ def load_mnist(dataset="training", digits=np.arange(10), path="."):
 
 # Load training data
 # ,digits=[3,8,5,6,9])
-training_images, training_labels = load_mnist('training',
-                                              path='/media/afali/Project/Projects/Projects/Python-workspace/hello-scikitlearn/Dataset/')
+training_images, training_labels = load_mnist('training', path=PATH_DATASET)
 
 # print(training_images[1])
 # print(training_labels[1])
@@ -97,15 +103,17 @@ n_labels = len(training_labels)
 dataLabels = training_labels.reshape((n_labels, -1))
 # show(images[1])
 
-x_data = dataImage[:300]
-y_data = dataLabels[:300]
+x_data = dataImage[:1000]
+y_data = dataLabels[:1000]
 print(x_data[1].shape)
 print(y_data[1].shape)
+
 # Applying classification
 classifier = svm.SVC(gamma=0.0001, C=100)
 classifier.fit(x_data, y_data.ravel())
 
-print(dataImage[110])
-predict = classifier.predict(dataImage[122])
+predict = classifier.predict(dataImage[900])
 print('result label:', predict)
-show(training_images[122], predict)
+# get the accuracy
+print('Accuracy score:', accuracy_score(dataLabels[900], predict) * 100, '%')
+show(training_images[900], predict)
